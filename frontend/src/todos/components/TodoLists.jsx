@@ -30,6 +30,7 @@ const getPersonalTodos = () => {
   )
 }
 
+
 export const TodoLists = ({ style }) => {
   const [todoLists, setTodoLists] = useState({})
   const [activeList, setActiveList] = useState()
@@ -38,6 +39,10 @@ export const TodoLists = ({ style }) => {
     getPersonalTodos().then(setTodoLists)
   }, [])
 
+  useEffect(()=> {
+    sendTodoLists(todoLists);
+  }, [todoLists])
+  
   if (!Object.keys(todoLists).length) return null
   return (
     <Fragment>
@@ -71,4 +76,15 @@ export const TodoLists = ({ style }) => {
       )}
     </Fragment>
   )
+}
+
+function sendTodoLists (todoLists) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(todoLists)
+  };
+  fetch('/todos', requestOptions)
+    .then(response => response.text())
+    .then(data => console.log(data));
 }

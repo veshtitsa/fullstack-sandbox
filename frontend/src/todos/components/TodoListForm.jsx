@@ -1,16 +1,42 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
+
+  var gottenTodos;
+
+/*   const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  fetch('/todos', requestOptions)
+    .then(response => response.text())
+    .then(data => gottenTodos = data.todo);
+ */
   const [todos, setTodos] = useState(todoList.todos)
 
   const handleSubmit = (event) => {
+    console.log("submitted");
     event.preventDefault()
     saveTodoList(todoList.id, { todos })
   }
+/* 
+  useEffect(() => {
+    // PUT request using fetch inside useEffect React hook
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ todo: todos })
+    };
+    fetch('/todos', requestOptions)
+        .then(response => response.text())
+        .then(data => console.log(data));
 
+  // empty dependency array means this effect will only run once (like componentDidMount in classes)
+  });
+ */
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
@@ -63,7 +89,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
             >
               Add Todo <AddIcon />
             </Button>
-            <Button type='submit' variant='contained' color='primary'>
+            <Button 
+              type='submit' 
+              variant='contained' 
+              color='primary'
+              >
               Save
             </Button>
           </CardActions>
