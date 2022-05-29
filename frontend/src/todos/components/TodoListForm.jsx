@@ -17,6 +17,10 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
  */
   const [todos, setTodos] = useState(todoList.todos)
 
+  useEffect(() => {
+    saveTodoList(todoList.id, { todos })
+  }, [todos])
+
   const handleSubmit = (event) => {
     console.log("submitted");
     event.preventDefault()

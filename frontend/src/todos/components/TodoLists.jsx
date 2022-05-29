@@ -13,36 +13,56 @@ import { TodoListForm } from './TodoListForm'
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const getPersonalTodos = () => {
-  return sleep(1000).then(() =>
-    Promise.resolve({
-      '0000000001': {
-        id: '0000000001',
-        title: 'First List',
-        todos: ['First todo of first list!'],
-      },
-      '0000000002': {
-        id: '0000000002',
-        title: 'Second List',
-        todos: ['First todo of second list!'],
-      },
-    })
-  )
-}
+
 
 
 export const TodoLists = ({ style }) => {
-  const [todoLists, setTodoLists] = useState({})
+
+  let getPersonalTodos = () => {
+    return sleep(1000).then(() =>
+    Promise.resolve(
+      getTodoLists()
+      .then(console.log(todoLists)))
+    )
+  }
+
+  var oldLists = {
+    '0000000001': {
+      id: '0000000001',
+      title: 'First List',
+      todos: ['First todo of first list!'],
+    },
+    '0000000002': {
+      id: '0000000002',
+      title: 'Second List',
+      todos: ['First todo of second list!'],
+    }
+  };
+
+  const [todoLists, setTodoLists] = useState(oldLists)
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    getPersonalTodos().then(setTodoLists)
+   const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+    };
+    
+    fetch('/gettodos', requestOptions)
+      .then(response => response.json())
+      .then(data => setTodoLists(data));
   }, [])
 
   useEffect(()=> {
-    sendTodoLists(todoLists);
+    if(todoLists != oldLists)
+    {
+      sendTodoLists(todoLists);
+      oldLists = todoLists;
+    }
   }, [todoLists])
   
+
+  console.log(todoLists)
   if (!Object.keys(todoLists).length) return null
   return (
     <Fragment>
@@ -86,5 +106,17 @@ function sendTodoLists (todoLists) {
   };
   fetch('/todos', requestOptions)
     .then(response => response.text())
+    .then(data => console.log(data));
+
+    getTodoLists();
+}
+
+function getTodoLists () {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  };
+  return fetch('/gettodos', requestOptions)
+    .then(response => response.json())
     .then(data => console.log(data));
 }
