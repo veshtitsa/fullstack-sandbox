@@ -11,58 +11,38 @@ import {
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
-
-
+var oldLists = {
+  '0000000001': {
+    id: '0000000001',
+    title: 'First List',
+    todos: ['First todo of first list!'],
+  },
+  '0000000002': {
+    id: '0000000002',
+    title: 'Second List',
+    todos: ['First todo of second list!'],
+  }
+};
 
 export const TodoLists = ({ style }) => {
 
-  let getPersonalTodos = () => {
-    return sleep(1000).then(() =>
-    Promise.resolve(
-      getTodoLists()
-      .then(console.log(todoLists)))
-    )
-  }
-
-  var oldLists = {
-    '0000000001': {
-      id: '0000000001',
-      title: 'First List',
-      todos: ['First todo of first list!'],
-    },
-    '0000000002': {
-      id: '0000000002',
-      title: 'Second List',
-      todos: ['First todo of second list!'],
-    }
-  };
 
   const [todoLists, setTodoLists] = useState(oldLists)
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-   const requestOptions = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-    };
-    
-    fetch('/gettodos', requestOptions)
-      .then(response => response.json())
+   getTodoLists()
       .then(data => setTodoLists(data));
   }, [])
 
   useEffect(()=> {
-    if(todoLists != oldLists)
+    if(todoLists !== oldLists)
     {
-      sendTodoLists(todoLists);
+      postTodoLists(todoLists);
       oldLists = todoLists;
     }
   }, [todoLists])
   
-
-  console.log(todoLists)
   if (!Object.keys(todoLists).length) return null
   return (
     <Fragment>
@@ -87,10 +67,14 @@ export const TodoLists = ({ style }) => {
           todoList={todoLists[activeList]}
           saveTodoList={(id, { todos }) => {
             const listToUpdate = todoLists[id]
-            setTodoLists({
-              ...todoLists,
-              [id]: { ...listToUpdate, todos },
-            })
+            if(JSON.stringify(listToUpdate.todos) !== JSON.stringify(todos))
+            {
+              setTodoLists({
+                ...todoLists,
+                [id]: { ...listToUpdate, todos },
+              })
+            }
+            
           }}
         />
       )}
@@ -98,7 +82,7 @@ export const TodoLists = ({ style }) => {
   )
 }
 
-function sendTodoLists (todoLists) {
+function postTodoLists (todoLists) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -106,17 +90,16 @@ function sendTodoLists (todoLists) {
   };
   fetch('/todos', requestOptions)
     .then(response => response.text())
-    .then(data => console.log(data));
-
-    getTodoLists();
+    .then(data => console.log("POST REQUEST" + data));
 }
 
-function getTodoLists () {
+async function getTodoLists () {
   const requestOptions = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   };
-  return fetch('/gettodos', requestOptions)
-    .then(response => response.json())
-    .then(data => console.log(data));
+  const response = await fetch('/todos', requestOptions)
+  const data = await response.json()
+  await console.log("GET REQUEST:" + data)
+  return data;
 }

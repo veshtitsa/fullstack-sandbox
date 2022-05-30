@@ -21,7 +21,7 @@ var todos = {
   }
 };
 
-app.get('/gettodos', (req, res) => {
+app.get('/todos', (req, res) => {
     res.send(todos)
     console.log('ding');
     console.log(todos);
@@ -29,8 +29,6 @@ app.get('/gettodos', (req, res) => {
 
 
 app.post('/todos', function(request, response){
-    /* console.log(request.body);      // your JSON
-     response.send(request.body);    // echo the result back */
      todos = request.body;
      console.log(todos);
      response.send(request.body);
