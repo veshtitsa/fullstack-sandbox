@@ -11,39 +11,31 @@ import {
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
 
-var oldLists = {
-  '0000000001': {
-    id: '0000000001',
-    title: 'First List',
-    todos: ['First todo of first list!'],
-  },
-  '0000000002': {
-    id: '0000000002',
-    title: 'Second List',
-    todos: ['First todo of second list!'],
-  }
-};
+var oldLists ;
 
 export const TodoLists = ({ style }) => {
 
 
-  const [todoLists, setTodoLists] = useState(oldLists)
+  const [todoLists, setTodoLists] = useState()
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
+    // initialize todoLists state from the API
    getTodoLists()
+      .then(data => oldLists = data)
       .then(data => setTodoLists(data));
   }, [])
 
   useEffect(()=> {
-    if(todoLists !== oldLists)
+    if(activeList !== undefined
+      && todoLists !== oldLists)
     {
-      postTodoLists(todoLists);
+      postTodoList(todoLists, activeList);
       oldLists = todoLists;
     }
-  }, [todoLists])
+  }, [todoLists, activeList])
   
-  if (!Object.keys(todoLists).length) return null
+  if (todoLists === undefined || !Object.keys(todoLists).length) return null
   return (
     <Fragment>
       <Card style={style}>
@@ -82,15 +74,15 @@ export const TodoLists = ({ style }) => {
   )
 }
 
-function postTodoLists (todoLists) {
+function postTodoList (todoLists, activeList) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(todoLists)
+    body: JSON.stringify(todoLists[activeList])
   };
   fetch('/todos', requestOptions)
-    .then(response => response.text())
-    .then(data => console.log("POST REQUEST" + data));
+    .then(response => response.json())
+    .then(data => console.log("POST REQUEST" + JSON.stringify(data)));
 }
 
 async function getTodoLists () {
@@ -100,6 +92,6 @@ async function getTodoLists () {
   };
   const response = await fetch('/todos', requestOptions)
   const data = await response.json()
-  await console.log("GET REQUEST:" + data)
+  await console.log("GET REQUEST:" + JSON.stringify(data))
   return data;
 }

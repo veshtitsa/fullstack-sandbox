@@ -29,7 +29,10 @@ app.get('/todos', (req, res) => {
 
 
 app.post('/todos', function(request, response){
-     todos = request.body;
+  if(("id" in request.body)) // this is already checked on the client side, but good to be extra extra sure
+  {
+    todos[request.body.id] = request.body;
+  }
      console.log(todos);
      response.send(request.body);
   });
