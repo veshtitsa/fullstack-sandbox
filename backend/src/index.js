@@ -12,19 +12,29 @@ var todos = {
   '0000000001': {
     id: '0000000001',
     title: 'First List',
-    todos: ['First todo of first list!'],
+    todos: [
+      {
+        done: true,
+        task: 'First todo of first list!'
+      }
+    ],
   },
   '0000000002': {
     id: '0000000002',
     title: 'Second List',
-    todos: ['First todo of second list!'],
+    todos: [
+      {
+        done: false,
+        task: 'First todo of second list!'
+      }
+    ],
   }
 };
 
 app.get('/todos', (req, res) => {
     res.send(todos)
     console.log('ding');
-    console.log(todos);
+    console.log(JSON.stringify(todos));
 })
 
 
