@@ -13,7 +13,6 @@ import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfi
 import { TodoListForm } from './TodoListForm'
 
 var oldLists ;
-window.removeEventListener("beforeunload", ()=>{});
 
 export const TodoLists = ({ style }) => {
 
