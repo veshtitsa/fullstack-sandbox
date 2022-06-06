@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
+import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import { TodoListForm } from './TodoListForm'
 
 var oldLists ;
@@ -20,17 +21,18 @@ export const TodoLists = ({ style }) => {
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    // initialize todoLists state from the API
+    // initialize todoLists state from the server
    getTodoLists()
       .then(data => oldLists = data)
       .then(data => setTodoLists(data));
   }, [])
 
   useEffect(()=> {
+    // update server version whenever the client one has changed significantly
     if(activeList !== undefined
       && todoLists !== oldLists)
     {
-      postTodoList(todoLists, activeList);
+      postTodoList(todoLists[activeList]);
       oldLists = todoLists;
     }
   }, [todoLists, activeList])
@@ -45,7 +47,9 @@ export const TodoLists = ({ style }) => {
             {Object.keys(todoLists).map((key) => (
               <ListItem key={key} button onClick={() => setActiveList(key)}>
                 <ListItemIcon>
-                  <ReceiptIcon />
+                  {(todoLists[key].todos.every(item => item.done))
+                    ? (<SentimentVerySatisfiedIcon />)
+                    : (<ReceiptIcon />)}
                 </ListItemIcon>
                 <ListItemText primary={todoLists[key].title} />
               </ListItem>
@@ -66,7 +70,6 @@ export const TodoLists = ({ style }) => {
                 [id]: { ...listToUpdate, todos },
               })
             }
-            
           }}
         />
       )}
@@ -74,11 +77,11 @@ export const TodoLists = ({ style }) => {
   )
 }
 
-function postTodoList (todoLists, activeList) {
+function postTodoList (todoList) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(todoLists[activeList])
+    body: JSON.stringify(todoList)
   };
   fetch('/todos', requestOptions)
     .then(response => response.json())

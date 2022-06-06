@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { TextField, Typography, Checkbox } from '@mui/material'
+import React, { useState } from 'react'
+import { TextField, Checkbox } from '@mui/material'
 
 export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
 
-  const [task, setTask] = useState(todoListItem.task)
   const [tempTask, setTempTask] = useState(todoListItem.task)
   
-  useEffect(() => {
-    console.log(todoListItem)
-  }, [])
   return ( 
     <div style={{width:'100%', display:'flex'}}>
         <Checkbox
@@ -21,8 +17,10 @@ export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
         </Checkbox>
  
         <TextField
-          sx={{ flexGrow: 1, marginTop: '0.50rem', marginBottom:'0.50em' }}
+          sx={{ flexGrow: 1, marginTop: '0.50rem', marginBottom:'0.50em'}}
+          inputProps={{disabled: todoListItem.done}}
           label='What to do?'
+          size='small'
           value={tempTask}
           onChange={(event) => {
             setTempTask(event.target.value)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
+import { Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import { TodoListItem } from './TodoListItem'
@@ -35,10 +35,6 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               <TodoListItem
                 todoListItem={item}
                 saveTodoListItem={(task) => {
-                  /* console.log(tempTodos.slice(0, index))
-                  console.log(task)
-                  console.log(tempTodos.slice(index+1)) */
-                  console.log("task is: "+JSON.stringify(task))
                   if(JSON.stringify(tempTodos[index]) !== task){
                   setTodos([
                     ...tempTodos.slice(0, index),
