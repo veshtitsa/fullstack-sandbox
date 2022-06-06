@@ -13,9 +13,9 @@ import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfi
 import { TodoListForm } from './TodoListForm'
 
 var oldLists ;
+window.removeEventListener("beforeunload", ()=>{});
 
 export const TodoLists = ({ style }) => {
-
 
   const [todoLists, setTodoLists] = useState()
   const [activeList, setActiveList] = useState()
@@ -84,8 +84,8 @@ function postTodoList (todoList) {
     body: JSON.stringify(todoList)
   };
   fetch('/todos', requestOptions)
-    .then(response => response.json())
-    .then(data => console.log("POST REQUEST" + JSON.stringify(data)));
+    .then(response => response.json());
+    //.then(data => console.log("POST REQUEST" + JSON.stringify(data)));
 }
 
 async function getTodoLists () {
@@ -95,6 +95,6 @@ async function getTodoLists () {
   };
   const response = await fetch('/todos', requestOptions)
   const data = await response.json()
-  await console.log("GET REQUEST:" + JSON.stringify(data))
+  //console.log("GET REQUEST:" + JSON.stringify(data))
   return data;
 }

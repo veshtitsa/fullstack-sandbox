@@ -42,15 +42,13 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                     ...tempTodos.slice(index+1)
                     ])
                   }
-
                 }}
-              
               />
               <Button
                 sx={{ margin: '8px' }}
                 size='small'
                 color='secondary'
-                onClick={(event) => {
+                onClick={() => {
                     setTodos([
                       // immutable delete
                       ...tempTodos.slice(0, index),
@@ -68,7 +66,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, {task:'', done:false}])
+                setTodos([...todos, { task: '', done: false }])
               }}
             >
               Add Todo <AddIcon />

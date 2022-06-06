@@ -1,20 +1,20 @@
 const express = require('express')
 const cors = require('cors')
+const PORT = 3001
 const app = express()
-
 
 app.use(cors())
 app.use(express.json())
 
-const PORT = 3001
-
-var todos = {
+// keeping default content same as in the beginning example
+// of course if this was actually production-intended, the lists would be empty
+var todos = { 
   '0000000001': {
     id: '0000000001',
     title: 'First List',
     todos: [
       {
-        done: true,
+        done: false,
         task: 'First todo of first list!'
       }
     ],
@@ -31,10 +31,9 @@ var todos = {
   }
 };
 
-app.get('/todos', (req, res) => {
+app.get('/todos', ( _, res) => {
     res.send(todos)
-    console.log('ding');
-    console.log(JSON.stringify(todos));
+    //console.log(JSON.stringify(todos));
 })
 
 
@@ -43,7 +42,7 @@ app.post('/todos', function(request, response){
   {
     todos[request.body.id] = request.body;
   }
-     console.log(todos);
+     //console.log(todos);
      response.send(request.body);
   });
 
