@@ -12,8 +12,6 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import { TodoListForm } from './TodoListForm'
 
-var oldLists ;
-
 export const TodoLists = ({ style }) => {
 
   const [todoLists, setTodoLists] = useState()
@@ -22,20 +20,9 @@ export const TodoLists = ({ style }) => {
   useEffect(() => {
     // initialize todoLists state from the server
    getTodoLists()
-      .then(data => oldLists = data)
       .then(data => setTodoLists(data));
   }, [])
 
-  useEffect(()=> {
-    // update server version whenever the client one has changed significantly
-    if(activeList !== undefined
-      && todoLists !== oldLists)
-    {
-      postTodoList(todoLists[activeList]);
-      oldLists = todoLists;
-    }
-  }, [todoLists, activeList])
-  
   if (todoLists === undefined || !Object.keys(todoLists).length) return null
   return (
     <Fragment>
@@ -68,6 +55,9 @@ export const TodoLists = ({ style }) => {
                 ...todoLists,
                 [id]: { ...listToUpdate, todos },
               })
+              postTodoList({
+                 ...listToUpdate, todos 
+              })
             }
           }}
         />
@@ -83,8 +73,8 @@ function postTodoList (todoList) {
     body: JSON.stringify(todoList)
   };
   fetch('/todos', requestOptions)
-    .then(response => response.json());
-    //.then(data => console.log("POST REQUEST" + JSON.stringify(data)));
+    .then(response => response.json())
+    .then(data => console.log("POST REQUEST" + JSON.stringify(data)));
 }
 
 async function getTodoLists () {
@@ -94,6 +84,6 @@ async function getTodoLists () {
   };
   const response = await fetch('/todos', requestOptions)
   const data = await response.json()
-  //console.log("GET REQUEST:" + JSON.stringify(data))
+  console.log("GET REQUEST:" + JSON.stringify(data))
   return data;
 }

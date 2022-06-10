@@ -33,16 +33,13 @@ var todos = {
 
 app.get('/todos', ( _, res) => {
     res.send(todos)
-    //console.log(JSON.stringify(todos));
+    console.log(JSON.stringify(todos));
 })
 
 
 app.post('/todos', function(request, response){
-  if(("id" in request.body)) // this is already checked on the client side, but good to be extra extra sure
-  {
-    todos[request.body.id] = request.body;
-  }
-     //console.log(todos);
+     todos[request.body.id] = request.body;
+     console.log(todos);
      response.send(request.body);
   });
 
