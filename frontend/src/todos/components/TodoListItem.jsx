@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TextField, Checkbox } from '@mui/material'
 
 export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
 
-  const [tempTask, setTempTask] = useState(todoListItem.task)
-  
   return ( 
     <div style={{width:'100%', display:'flex'}}>
       <Checkbox
@@ -12,7 +10,7 @@ export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
       size='medium'
       color='secondary'
       checked={todoListItem.done}
-      onClick={() => saveTodoListItem({task: tempTask, done: !todoListItem.done})}
+      onClick={() => saveTodoListItem({task: todoListItem.task, done: !todoListItem.done})}
       >
       </Checkbox>
 
@@ -21,13 +19,10 @@ export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
         inputProps={{disabled: todoListItem.done}}
         label='What to do?'
         size='small'
-        value={tempTask}
+        value={todoListItem.task}
         onChange={(event) => {
-          setTempTask(event.target.value)
+          saveTodoListItem({task: event.target.value, done: todoListItem.done});
         }}
-        onBlur={() => {
-          saveTodoListItem({task: tempTask, done: todoListItem.done});
-        }} 
       />
     </div>
     );

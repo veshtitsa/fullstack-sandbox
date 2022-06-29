@@ -7,16 +7,9 @@ import { TodoListItem } from './TodoListItem'
 export const TodoListForm = ({ todoList, saveTodoList }) => {
 
   const [todos, setTodos] = useState(todoList.todos)
-  const [tempTodos, setTempTodos] = useState(todoList.todos)
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    saveTodoList(todoList.id, { todos })
-  }
 
   useEffect(() => {
-    setTempTodos(todos)
-      saveTodoList(todoList.id, { todos })
+    saveTodoList(todoList.id, { todos })
   }, [todos, todoList.id, saveTodoList])
 
   return (
@@ -24,10 +17,10 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
       <CardContent>
         <Typography component='h2'>{todoList.title}</Typography>
         <form
-          onSubmit={handleSubmit}
+         // onSubmit={handleSubmit}
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
-          {tempTodos.map((item, index) => (
+          {todos.map((item, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography sx={{ margin: '8px' }} variant='h6'>
                 {index + 1}
@@ -35,11 +28,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               <TodoListItem
                 todoListItem={item}
                 saveTodoListItem={(task) => {
-                  if(JSON.stringify(tempTodos[index]) !== task){
+                  if(JSON.stringify(todos[index]) !== task){
                   setTodos([
-                    ...tempTodos.slice(0, index),
+                    ...todos.slice(0, index),
                     task,
-                    ...tempTodos.slice(index+1)
+                    ...todos.slice(index+1)
                     ])
                   }
                 }}
@@ -51,8 +44,8 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 onClick={() => {
                     setTodos([
                       // immutable delete
-                      ...tempTodos.slice(0, index),
-                      ...tempTodos.slice(index + 1),
+                      ...todos.slice(0, index),
+                      ...todos.slice(index + 1),
                     ])
                   }
                 }

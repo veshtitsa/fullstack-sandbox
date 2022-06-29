@@ -11,6 +11,7 @@ import {
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import { TodoListForm } from './TodoListForm'
+import { debounce } from 'lodash';
 
 export const TodoLists = ({ style }) => {
 
@@ -55,9 +56,10 @@ export const TodoLists = ({ style }) => {
                 ...todoLists,
                 [id]: { ...listToUpdate, todos },
               })
-              postTodoList({
-                 ...listToUpdate, todos 
-              })
+              
+              debouncedFunction({
+                ...listToUpdate, todos 
+              });
             }
           }}
         />
@@ -65,6 +67,8 @@ export const TodoLists = ({ style }) => {
     </Fragment>
   )
 }
+
+var debouncedFunction = debounce(postTodoList, 500);
 
 function postTodoList (todoList) {
   const requestOptions = {
