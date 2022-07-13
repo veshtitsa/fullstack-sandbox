@@ -12,18 +12,23 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import { TodoListForm } from './TodoListForm'
 import { debounce } from 'lodash';
+import { connect } from 'react-redux';
+import { activateList, temporary_setList } from '../actions';
 
-export const TodoLists = ({ style }) => {
 
-  const [todoLists, setTodoLists] = useState()
-  const [activeList, setActiveList] = useState()
 
-  useEffect(() => {
+const TodoLists = ({ style, activeList, todoLists, onListActivated, onTodoListSet }) => {
+
+  //const [todoLists, setTodoLists] = useState()
+  //const [activeList, setActiveList] = useState()
+
+ /*  useEffect(() => {
     // initialize todoLists state from the server
    getTodoLists()
       .then(data => setTodoLists(data));
-  }, [])
+  }, []) */
 
+  console.log(todoLists);
   if (todoLists === undefined || !Object.keys(todoLists).length) return null
   return (
     <Fragment>
@@ -32,9 +37,9 @@ export const TodoLists = ({ style }) => {
           <Typography component='h2'>My Todo Lists</Typography>
           <List>
             {Object.keys(todoLists).map((key) => (
-              <ListItem key={key} button onClick={() => setActiveList(key)}>
+              <ListItem key={key} button onClick={() => onListActivated(key)}>
                 <ListItemIcon>
-                  {(todoLists[key].todos.every(item => item.done))
+                  {(todoLists[key].tasks.every(item => item.done))
                     ? (<SentimentVerySatisfiedIcon />)
                     : (<ReceiptIcon />)}
                 </ListItemIcon>
@@ -52,10 +57,11 @@ export const TodoLists = ({ style }) => {
             const listToUpdate = todoLists[id]
             if(JSON.stringify(listToUpdate.todos) !== JSON.stringify(todos))
             {
-              setTodoLists({
+              /* setTodoLists({
                 ...todoLists,
                 [id]: { ...listToUpdate, todos },
-              })
+              }) */
+              onTodoListSet(id, todos)
               
               debouncedFunction({
                 ...listToUpdate, todos 
@@ -91,3 +97,17 @@ async function getTodoLists () {
   console.log("GET REQUEST:" + JSON.stringify(data))
   return data;
 }
+
+const mapStateToProps = (state) => {
+  const {lists, activeList} = state;
+  return {
+    activeList: activeList,
+    todoLists: lists
+}};
+
+const mapDispatchToProps = (dispatch) => ({
+  onListActivated: (listId) => dispatch(activateList(listId)),
+  onTodoListSet: (listId, tasks) => dispatch(temporary_setList(listId, tasks))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoLists);

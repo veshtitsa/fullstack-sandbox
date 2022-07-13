@@ -6,7 +6,7 @@ import { TodoListItem } from './TodoListItem'
 
 export const TodoListForm = ({ todoList, saveTodoList }) => {
 
-  const [todos, setTodos] = useState(todoList.todos)
+  const [todos, setTodos] = useState(todoList.tasks)
 
   useEffect(() => {
     saveTodoList(todoList.id, { todos })
