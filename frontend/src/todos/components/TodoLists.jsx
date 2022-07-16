@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
-import { TodoListForm } from './TodoListForm'
+import TodoListForm from './TodoListForm'
 import { debounce } from 'lodash';
 import { connect } from 'react-redux';
 import { activateList, temporary_setList } from '../actions';
@@ -54,6 +54,7 @@ const TodoLists = ({ style, activeList, todoLists, onListActivated, onTodoListSe
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
           saveTodoList={(id, { todos }) => {
+            console.log("am saving")
             const listToUpdate = todoLists[id]
             if(JSON.stringify(listToUpdate.todos) !== JSON.stringify(todos))
             {
@@ -87,7 +88,7 @@ function postTodoList (todoList) {
     .then(data => console.log("POST REQUEST" + JSON.stringify(data)));
 }
 
-async function getTodoLists () {
+export async function getTodoLists () {
   const requestOptions = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }

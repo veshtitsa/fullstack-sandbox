@@ -60,6 +60,7 @@ export const tasks = (state=[], action) => {
                 task({}, action)
             ]
         case constants.REMOVE_TASK:
+            console.log("removingg")
             var index = state.findIndex(x => x.id == action.payload.taskId);
             return [
                 ...state.slice(0, index),
@@ -116,6 +117,15 @@ export const activeList = (state='', action) => {
     switch (action.type){
         case constants.ACTIVATE_LIST:
             return action.payload.listId;
+        default:
+            return state;
+    }
+}
+
+export const initialState = (state={}, action) => {
+    switch (action.type){
+        case constants.SET_INITIAL_STATE:
+            return action.payload.state;
         default:
             return state;
     }

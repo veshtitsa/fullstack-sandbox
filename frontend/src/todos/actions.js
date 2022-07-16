@@ -48,3 +48,10 @@ export const temporary_setList = (listId, tasks) => ({
         tasks: tasks
     }
 })
+
+export const setInitialState = (state) => ({
+    type: constants.SET_INITIAL_STATE,
+    payload: {
+        state:state
+    }
+})

@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
-import { TodoListItem } from './TodoListItem'
+import TodoListItem from './TodoListItem'
+import {v4 as uuidv4} from "uuid";
+import { addTask, changeTaskText, removeTask } from '../actions'
+import { connect } from 'react-redux'
 
-export const TodoListForm = ({ todoList, saveTodoList }) => {
+const TodoListForm = ({ todoList, saveTodoList, onTaskAdded, onTaskRemoved, onTaskChanged, activeList, todos }) => {
 
-  const [todos, setTodos] = useState(todoList.tasks)
-
-  useEffect(() => {
+/*   useEffect(() => {
+    console.log("from here")
     saveTodoList(todoList.id, { todos })
   }, [todos, todoList.id, saveTodoList])
-
+ */
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
@@ -28,13 +30,10 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               <TodoListItem
                 todoListItem={item}
                 saveTodoListItem={(task) => {
-                  if(JSON.stringify(todos[index]) !== task){
-                  setTodos([
-                    ...todos.slice(0, index),
-                    task,
-                    ...todos.slice(index+1)
-                    ])
-                  }
+                  /* if(JSON.stringify(todos[index]) !== task){
+                    onTaskChanged(activeList, item.id, task.text)
+                  } */
+                  // noop
                 }}
               />
               <Button
@@ -42,11 +41,12 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 size='small'
                 color='secondary'
                 onClick={() => {
-                    setTodos([
+                    onTaskRemoved(activeList, item.id)
+                    /* setTodos([
                       // immutable delete
                       ...todos.slice(0, index),
                       ...todos.slice(index + 1),
-                    ])
+                    ]) */
                   }
                 }
               >
@@ -59,7 +59,8 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, { task: '', done: false }])
+                onTaskAdded(activeList)
+                //setTodos([...todos, { task: '', done: false }])
               }}
             >
               Add Todo <AddIcon />
@@ -70,3 +71,18 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     </Card>
   )
 }
+
+const mapStateToProps = (state) => {
+  const {lists, activeList} = state;
+  return {
+    todos: lists[activeList].tasks,
+    activeList: activeList
+}};
+
+const mapDispatchToProps = (dispatch) => ({
+  onTaskAdded: (listId) => dispatch(addTask(listId, uuidv4())),
+  onTaskRemoved: (listId, taskId) => dispatch(removeTask(listId, taskId)),
+  onTaskChanged: (listId, taskId, text) => dispatch(changeTaskText(listId, taskId, text))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoListForm);

@@ -1,7 +1,9 @@
 import React from 'react'
 import { TextField, Checkbox } from '@mui/material'
+import { changeTaskText, toggleTask } from '../actions';
+import { connect } from 'react-redux';
 
-export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
+const TodoListItem = ({ todoListItem, saveTodoListItem, onTaskChanged, onTaskToggled, activeList }) => {
 
   return ( 
     <div style={{width:'100%', display:'flex'}}>
@@ -10,7 +12,7 @@ export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
       size='medium'
       color='secondary'
       checked={todoListItem.done}
-      onClick={() => saveTodoListItem({task: todoListItem.task, done: !todoListItem.done})}
+      onClick={() => onTaskToggled(activeList, todoListItem.id)}
       >
       </Checkbox>
 
@@ -19,11 +21,24 @@ export const TodoListItem = ({ todoListItem, saveTodoListItem }) => {
         inputProps={{disabled: todoListItem.done}}
         label='What to do?'
         size='small'
-        value={todoListItem.task}
+        value={todoListItem.text}
         onChange={(event) => {
-          saveTodoListItem({task: event.target.value, done: todoListItem.done});
+          onTaskChanged(activeList, todoListItem.id, event.target.value)
         }}
       />
     </div>
     );
 }
+
+const mapStateToProps = (state) => {
+  const {lists, activeList} = state;
+  return {
+    activeList: activeList
+}};
+
+const mapDispatchToProps = (dispatch) => ({
+  onTaskChanged: (listId, taskId, text) => dispatch(changeTaskText(listId, taskId, text)),
+  onTaskToggled: (listId, taskId) => dispatch(toggleTask(listId, taskId))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoListItem);
